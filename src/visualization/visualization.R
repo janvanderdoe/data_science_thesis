@@ -1,3 +1,5 @@
+setwd("~/Git projects/dss_thesis/src/visualization")
+
 #import clean data
 df <- read.csv("../../gen/input/amazon_search_hedonic_clean.csv", sep = ";")
 library(ggplot2)
@@ -47,6 +49,28 @@ df %>%
   theme_minimal() +
   #put legend on top of graph on right
   theme(legend.position = c(0.75, 0.8)) +
+  #increase font of everything
+  theme(text = element_text(size = 15)) +
+  #center title
+  theme(plot.title = element_text(hjust = 0.5))
+
+#plot BERT performance
+#make dataframe with BERT performance
+bert_performance <- data.frame(
+  Model = c("64", "128", "256", "512", "64", "128", "256", "512"),
+  Split = c("validation", "validation", "validation", "validation",
+          "training", "training", "training", "training"),
+  Loss = c(1.529896259, 1.533674359, 1.528775215, 1.516540647,
+               1.45889926, 1.475348711, 1.47029984, 1.557145596
+               )
+)
+
+
+ggplot(bert_performance, aes(x = factor(Model, c("64", "128", "256", "512")), y = Loss, fill = Split)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "BERT performance", x = "Sequence Length", y = "Loss") +
+  theme_minimal() +
+  scale_fill_manual(values = c("darkgrey", "lightgrey")) +  # Define column colors
   #increase font of everything
   theme(text = element_text(size = 15)) +
   #center title
