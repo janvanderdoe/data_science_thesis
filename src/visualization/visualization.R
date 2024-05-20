@@ -1,3 +1,5 @@
+#This file is used for the visualization of the data
+
 setwd("~/Git projects/dss_thesis/src/visualization")
 
 #import clean data
@@ -228,7 +230,7 @@ ggplot(model_comparison, aes(x = Features, y = Accuracy, fill = Model_Type)) +
   #center title
   theme(plot.title = element_text(hjust = 0.5)) +
   #change x labels
-  scale_x_discrete(labels = c("Text", "Text + Photo", "Text + Photo(PCA)")) +
+  scale_x_discrete(labels = c("Text", "Text + Photo", "Text + Photo (PCA)")) +
   #change split values
   #scale_fill_discrete(labels = c("NN", "Random Forest", "Decision Tree")) +
   #change legend title
