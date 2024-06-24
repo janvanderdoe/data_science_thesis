@@ -1,9 +1,6 @@
 #This file is used for the visualization of the data
 
 setwd("~/Git projects/dss_thesis/src/visualization")
-
-#import clean data
-df <- read.csv("../../gen/output/amazon_search_hedonic_clean_merged.csv", sep = ";")
 library(ggplot2)
 library(dplyr)
 
@@ -165,7 +162,9 @@ ggplot(bert_performance, aes(x = Data, y = Accuracy, fill = Model)) +
   
 
 #sample data
-bert_performance <- read.csv("../../gen/visualization/balanced_model_comparison.csv", sep = ";")
+bert_performance <- read.csv("../../gen/visualization/second_submission/s2_model_comparison.csv", sep = ";")
+#remove xlnet-base-cased
+bert_performance <- bert_performance[bert_performance$name != "xlnet-base-cased", ]
 #import pivot_longer
 library(tidyr)
 #make dataframe longer based on eval_loss and train_loss
@@ -174,7 +173,7 @@ bert_performance <- bert_performance %>%
 #make a bar chart of the BERT performance with eval_loss and train_loss for each model
 ggplot(bert_performance, aes(x = name, y = Accuracy, fill = Split)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "BERT performance", x = "Model", y = "Accuracy") +
+  labs(x = "Model", y = "Accuracy") +
   theme_minimal() +
   scale_fill_manual(values = c("darkgrey", "grey30"), labels = c("Validation", "Training")) +
   #increase font of everything
@@ -187,7 +186,9 @@ ggplot(bert_performance, aes(x = name, y = Accuracy, fill = Split)) +
   coord_cartesian(ylim = c(0.5, 0.75))
 
 #seq length comparison
-sequence_lengths <- read.csv("../../gen/visualization/balanced_sequence_comparison_roberta_base.csv", sep = ";")
+#open sequence_comparison.xlsx
+library(readxl)
+sequence_lengths <- read_excel("../../gen/visualization/second_submission/sequence_comparison.xlsx", sheet = "sequence_comparison")
 sequence_lengths <- sequence_lengths %>%
   pivot_longer(cols = c(accuracy, train_accuracy), names_to = "Split", values_to = "Accuracy")
 
@@ -196,7 +197,7 @@ sequence_lengths$seq_length <- as.factor(sequence_lengths$seq_length)
 #make a bar chart of the BERT performance with eval_loss and train_loss for each model
 ggplot(sequence_lengths, aes(x = seq_length, y = Accuracy, fill = Split)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "BERT performance", x = "Model", y = "Accuracy") +
+  labs(x = "Model", y = "Accuracy") +
   theme_minimal() +
    # Define column colors
   #increase font of everything
@@ -207,22 +208,21 @@ ggplot(sequence_lengths, aes(x = seq_length, y = Accuracy, fill = Split)) +
   coord_cartesian(ylim = c(0.5, 0.75))
 #make dataframe with model comparison
 model_comparison <- data.frame(
-  Features = c("Control", "Control", "Control",
-           "Control + cp", "Control + cp", "Control + cp",
-           "Control + cp(pca)", "Control + cp(pca)", "Control + cp(pca)"),
-  Model_Type = c("Neural Network", "Random Forest", "Decision Tree",
-            "Neural Network", "Random Forest", "Decision Tree",
-            "Neural Network", "Random Forest", "Decision Tree"),
-  Accuracy = c(0.7193, 0.7185586538037972, 0.6905422669,
-               0.7300118803977966, 0.690982776089159, 0.7004977754283952,
-               0.7359, 0.726840227302762, 0.7044623584864103)
+  Features = c("Text", "Text", "Text",
+           "Text + cp", "Text + cp", "Text + cp",
+           "Text + cp(pca)", "Text + cp(pca)", "Text + cp(pca)"),
+  Model_Type = c("Neural Network", "Random Forest", "XGBoost",
+            "Neural Network", "Random Forest", "XGBoost",
+            "Neural Network", "Random Forest", "XGBoost"),
+  Accuracy = c(0.7342901825904846, 0.74658661, 0.7585951636782365,
+               0.7344958186149597, 0.7043510445797007, 0.7537012666556999,
+               0.722, 0.752, 0.764)
 )
-
 
 #make a bar chart of the model comparison
 ggplot(model_comparison, aes(x = Features, y = Accuracy, fill = Model_Type)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Model Comparison Features and Model Type", x = "Features", y = "Accuracy") +
+  labs(x = "Features", y = "Accuracy") +
   theme_minimal() +
   scale_fill_manual(values = c("darkgrey", "lightgrey", "black")) +  # Define column colors
   #increase font of everything
@@ -268,7 +268,7 @@ ggplot(test_performance, aes(x = Category, y = Accuracy)) +
 baseline_performance <- data.frame(
   Model = c('K-nn', 'K-nn', 'NB', 'NB', 'LR', 'LR'),
   Split = c('Train', 'Validation', 'Train', 'Validation', 'Train', 'Validation'),
-  Accuracy = c(0.523215177, 0.502444826, 0.692138263, 0.63913484, 0.678966844, 0.664640324))
+  Accuracy = c(0.537527, 0.534298, 0.703867, 0.647722, 0.678966844, 0.676139))
   
 #make bar plot
 ggplot(baseline_performance, aes(x = Model, y = Accuracy, fill = Split)) +
